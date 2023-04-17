@@ -1,0 +1,14 @@
+/*
+!/.gitignore
+
+# IntelliJ IDEA "Ignore Exceptions"
+# - See, https://tips.seebrock3r.me/e28c24fc07aa
+!/vcs.xml
+!/fileTemplates/
+!/inspectionProfiles/
+!/scopes/
+!/codeStyles/
+!/encodings.xml
+!/copyright/
+#!/compiler.xml
+!/runConfigurations/
