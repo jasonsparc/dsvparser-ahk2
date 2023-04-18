@@ -21,16 +21,16 @@ class DSVParser {
 	; Properties
 
 	Delimiters => this.___Delimiters
-	Ds => this.Delimiters
+	Ds => this.___Delimiters
 
 	Qualifiers => this.___Qualifiers
-	Qs => this.Qualifiers
+	Qs => this.___Qualifiers
 
 	DefaultDelimiter => this.___DefaultDelimiter
-	D => this.DefaultDelimiter
+	D => this.___DefaultDelimiter
 
 	DefaultQualifier => this.___DefaultQualifier
-	Q => this.DefaultQualifier
+	Q => this.___DefaultQualifier
 
 	; -------------------------------------------------------------------------
 	; Methods
