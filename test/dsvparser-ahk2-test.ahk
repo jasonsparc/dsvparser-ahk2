@@ -63,8 +63,7 @@ Assert(isLastInRow)
 
 ; Optional blank last line
 
-inOutPos := 1
-Assert("1" == TSVParser.FormatCell(TSVParser.FetchCell("1`r`n", &isLastInRow, &inOutPos)))
+Assert("1" == TSVParser.FormatCell(TSVParser.FetchCell("1`r`n", &isLastInRow, &(inOutPos := 1))))
 Assert(isLastInRow && inOutPos == 0)
 
 ; -----------------------------------------------------------------------------
