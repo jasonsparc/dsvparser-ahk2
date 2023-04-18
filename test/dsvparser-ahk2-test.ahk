@@ -105,6 +105,91 @@ Assert("1`t2`r`n`t" == TSVParser.FromArray(TSVParser.ToArray("1`t2`r`n`r`n"), , 
 Assert("1`t2`r`n`t`r`n" == TSVParser.FromArray(TSVParser.ToArray("1`t2`r`n`r`n")))
 
 ; -----------------------------------------------------------------------------
+; Parsing tests: Normal DSV cells
+
+Assert("Carol" == CSVParser.FetchCell("Carol,Alice,Bob"))
+Assert("Alice" == CSVParser.FetchCell("Carol,Alice,Bob", , 7))
+Assert("Bob" == CSVParser.FetchCell("Carol,Alice,Bob", , 13))
+
+Assert("Carol" == TSVParser.FetchCell("Carol`tAlice`tBob"))
+Assert("Alice" == TSVParser.FetchCell("Carol`tAlice`tBob", , 7))
+Assert("Bob" == TSVParser.FetchCell("Carol,Alice,Bob", , 13))
+
+Assert("Carol,Alice,Bob" == CSVParser.FormatRow(CSVParser.FetchRow("Carol,Alice,Bob")))
+Assert("Carol`tAlice`tBob" == TSVParser.FormatRow(TSVParser.FetchRow("Carol`tAlice`tBob")))
+
+MSVParser := DSVParser("| `n")
+d1 := MSVParser.D
+
+loop parse MSVParser.Delimiters
+{
+	d := A_LoopField
+	Assert("Carol" == MSVParser.FetchCell("Carol" d "Alice" d "Bob"), d)
+	Assert("Alice" == MSVParser.FetchCell("Carol" d "Alice" d "Bob", , 7), d)
+	Assert("Bob" == MSVParser.FetchCell("Carol" d "Alice" d "Bob", , 13), d)
+
+	Assert("Carol" d1 "Alice" d1 "Bob" == MSVParser.FormatRow(MSVParser.FetchRow("Carol" d "Alice" d "Bob")))
+}
+
+Assert("Alice" == CSVParser.FormatCell("Alice"))
+Assert("Alice" == TSVParser.FormatCell("Alice"))
+
+; -----------------------------------------------------------------------------
+; Parsing tests: Text-qualified DSV cells
+
+Assert("Carol" == CSVParser.FetchCell("`"Carol`",Alice,Bob"))
+Assert("Alice" == CSVParser.FetchCell("Carol,`"Alice`",Bob", , 7))
+Assert("Bob" == CSVParser.FetchCell("Carol,Alice,`"Bob`"", , 13))
+
+; Embedded delimiters, qualifiers, newlines
+Assert("foo,bar" == CSVParser.FetchCell("`"foo,bar`",`"Hello`nWorld`""))
+Assert("foo`"bar" == CSVParser.FetchCell("`"foo`"`"bar`",`"Hello`nWorld`""))
+Assert("Hello`"World" == CSVParser.FetchCell("`"foo`r`nbar`",`"Hello`"`"World`"", , 12))
+Assert("Hello`r`nWorld" == CSVParser.FetchCell("`"foo,bar`",`"Hello`r`nWorld`"", , 11))
+
+CSVParser2 := DSVParser(",", "`"'|```r")
+loop parse CSVParser2.Qualifiers
+{
+	q := A_LoopField
+	Assert("Carol" == CSVParser2.FetchCell(q "Carol" q ",Alice,Bob"), q)
+	Assert("Alice" == CSVParser2.FetchCell("Carol," q "Alice" q ",Bob", , 7), q)
+	Assert("Bob" == CSVParser2.FetchCell("Carol,Alice," q "Bob" q, , 13), q)
+
+	allQualifiedCells := q "Carol" q "," q "Alice" q "," q  "Bob" q
+	Assert("Carol" == CSVParser2.FetchCell(allQualifiedCells), q)
+	Assert("Alice" == CSVParser2.FetchCell(allQualifiedCells, , 9), q)
+	Assert("Bob" == CSVParser2.FetchCell(allQualifiedCells, , 17), q)
+
+	; Parse cells after a text-qualified cell
+	Assert("Alice" == CSVParser2.FetchCell(q "Carol," q "Alice,Bob", , 9), q)
+	Assert("Bob" == CSVParser2.FetchCell("Carol," q "Alice" q ",Bob", , 15), q)
+
+	; Embedded delimiters, qualifiers, newlines
+	Assert("foo,bar" == CSVParser2.FetchCell(q "foo,bar" q "," q "Hello`nWorld" q), q)
+	Assert("foo" q "bar" == CSVParser2.FetchCell(q "foo" q q "bar" q "," q "Hello`nWorld" q), q)
+	Assert("Hello" q "World" == CSVParser2.FetchCell(q "foo`r`nbar" q "," q "Hello" q q "World" q, , 12), q)
+	Assert((q == "`r" ? "Hello" : "Hello`r`nWorld") == CSVParser2.FetchCell(q "foo,bar" q "," q "Hello`r`nWorld" q, , 11), q)
+	Assert((q == "`"" ? "HelloWorld`"" : "Hello`"World") == CSVParser2.FetchCell(q "foo,bar" q "," q "Hello`"World" q, , 11), q)
+}
+
+Assert("Alice" == CSVParser2.FormatCell("Alice"))
+
+q := CSVParser2.Q, qs := CSVParser2.Qualifiers, qs2 := StrReplace(qs, q, q q)
+Assert(q "Alice" qs2 "Carol" q == CSVParser2.FormatCell("Alice" qs "Carol"))
+
+ds := CSVParser2.Delimiters
+Assert(q "Alice" ds "Carol" q == CSVParser2.FormatCell("Alice" ds "Carol"))
+Assert(q "Alice" ds q q "Carol" q == CSVParser2.FormatCell("Alice" ds q "Carol"))
+Assert(q "Alice" ds qs2 "Carol" q == CSVParser2.FormatCell("Alice" ds qs "Carol"))
+
+Assert(q "Alice" q q ds "Carol" q == CSVParser2.FormatCell("Alice" q ds "Carol"))
+Assert(q "Alice" qs2 ds "Carol" q == CSVParser2.FormatCell("Alice" qs ds "Carol"))
+
+Assert(q "Alice`nCarol" q == CSVParser2.FormatCell("Alice`nCarol"))
+Assert(q "Alice`r`nCarol" q == CSVParser2.FormatCell("Alice`r`nCarol"))
+Assert(q "Alice`r" q q ds "`nCarol" q == CSVParser2.FormatCell("Alice`r" q ds "`nCarol"))
+
+; -----------------------------------------------------------------------------
 ; All tests ended
 
 MsgBox "All tests passed!", , "Iconi"
