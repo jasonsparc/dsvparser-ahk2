@@ -35,6 +35,42 @@ class DSVParser {
 	; -------------------------------------------------------------------------
 	; Methods
 
+	; Given a DSV string, parses a single DSV row from it, spits out to the
+	; specified "OutRow" output variable an array of DSV cell values, and then
+	; returns the next position in the input string where parsing may continue.
+	;
+	; The return value can be 0 to signal that the string was fully consumed and
+	; that there is nothing left to parse.
+	;
+	NextRow(InString, &OutRow:="", StartingPos:=1, InitCapacity:=0) {
+		OutRow := []
+		if (InitCapacity) {
+			OutRow.Capacity := InitCapacity
+		}
+		loop {
+			StartingPos := this.NextCell(InString, &cell, &done, StartingPos)
+			OutRow.Push(cell)
+		} until done
+		return StartingPos
+	}
+
+	FetchRow(InString, InOutPos:=1, InitCapacity:=0) {
+		if (not InOutPos is VarRef)
+			_InOutPos := InOutPos, InOutPos := &_InOutPos
+
+		%InOutPos% := this.NextRow(InString, &row, %InOutPos%, InitCapacity)
+		return row
+	}
+
+	FormatRow(RowArray, &OutputString:="") {
+		d := this.___DefaultDelimiter
+		cols := RowArray.Length
+		loop cols - 1
+			OutputString .= this.FormatCell(RowArray[A_Index]) . d
+		OutputString .= this.FormatCell(RowArray[cols])
+		return OutputString
+	}
+
 	; Given a DSV string, parses a single DSV cell from it, spits it out to the
 	; specified "OutCell" output variable, and then returns the next position in
 	; the input string where parsing may continue.
