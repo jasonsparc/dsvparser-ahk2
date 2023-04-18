@@ -34,6 +34,9 @@ Assert(String(TSVParser) == String(TSVParser))
 sample := "12345`t`"hello`t`"world`t`r`n"
 expected := "12345`t`"hello`tworld`"`t"
 
+Assert("12345" == TSVParser.FetchCell(sample))
+Assert(ObjHasOwnProp(TSVParser, "NextCell__regex"))
+
 Assert("12345" == TSVParser.FetchCell(sample, , 1))
 Assert("2345" == TSVParser.FetchCell(sample, , 2))
 
@@ -50,6 +53,8 @@ Assert(isLastInRow)
 
 Assert("" == TSVParser.FormatCell(TSVParser.FetchCell("", &isLastInRow)))
 Assert(isLastInRow)
+
+Assert(ObjHasOwnProp(TSVParser, "FormatCell__regex"))
 
 ; Single cells
 
