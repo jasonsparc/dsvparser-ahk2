@@ -35,6 +35,52 @@ class DSVParser {
 	; -------------------------------------------------------------------------
 	; Methods
 
+	ToArray(InString, InitCapacity:=0) {
+		dsvArr := []
+		if (InitCapacity)
+			dsvArr.Capacity := InitCapacity
+
+		nextPos := 1
+		maxCols := 0
+
+		loop {
+			nextPos := this.NextRow(InString, &row, nextPos, maxCols)
+			cols := row.Length
+			if (cols > maxCols)
+				maxCols := cols
+			dsvArr.Push(row)
+		} until !nextPos
+
+		for _, row in dsvArr {
+			extraCols := maxCols - row.Length
+			if (extraCols) {
+				row.Capacity := maxCols
+				loop extraCols
+					row.Push("") ; Append an empty cell
+			}
+		}
+		return dsvArr
+	}
+
+	FromArray(DSVArray, LineSeparator:="`r`n", BlankLastLine:=true, &OutputString:="") {
+		; Supported line separators. See:
+		; - https://en.wikipedia.org/wiki/Newline#Representation
+		; - https://docs.python.org/3/library/stdtypes.html#str.splitlines
+		static ls := "S)`r`n|`n`r|[`r`n`v`f" chr(0x85) chr(0x1E) chr(0x1D) chr(0x1C) chr(0x2028) chr(0x2029) "]"
+		if not LineSeparator ~= ls
+			throw Error("Unsupported newline sequence.", -1)
+
+		rows := DSVArray.Length
+		loop rows - 1 {
+			this.FormatRow(DSVArray[A_Index], &OutputString)
+			OutputString .= LineSeparator
+		}
+		this.FormatRow(DSVArray[rows], &OutputString)
+		if (BlankLastLine)
+			OutputString .= LineSeparator
+		return OutputString
+	}
+
 	; Given a DSV string, parses a single DSV row from it, spits out to the
 	; specified "OutRow" output variable an array of DSV cell values, and then
 	; returns the next position in the input string where parsing may continue.
