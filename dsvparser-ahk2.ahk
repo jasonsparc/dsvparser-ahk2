@@ -6,7 +6,7 @@ global TSVParser := DSVParser("`t")
 class DSVParser {
 
 	; Creates a new DSVParser with the specified settings.
-	__New(Delimiters, Qualifiers:='"') {
+	__New(Delimiters, Qualifiers:="`"") {
 		if (StrLen(Delimiters) <= 0)
 			throw Error("No delimiter specified.", -1)
 
