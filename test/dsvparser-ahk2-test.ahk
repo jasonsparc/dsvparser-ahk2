@@ -55,6 +55,12 @@ Assert(expected == TSVParser.FromArray(TSVParser.ToArray(sample), , false))
 Assert(expected "`r`n" expected == TSVParser.FromArray(TSVParser.ToArray(sample sample), , false))
 Assert(expected "`r`n`t`t`r`n" expected == TSVParser.FromArray(TSVParser.ToArray(sample "`n" sample), , false))
 
+sampleArrayOfArrays := TSVParser.ToArray(sample sample sample)
+Assert(sampleArrayOfArrays[1][2] == "hello`tworld")
+Assert(sampleArrayOfArrays[2][3] == "")
+Assert(sampleArrayOfArrays.Length == 3)
+Assert(sampleArrayOfArrays[3].Length == 3)
+
 NQ_TSVParser := DSVParser("`t", "")
 Assert(sample == NQ_TSVParser.FromArray(NQ_TSVParser.ToArray(sample)))
 
@@ -188,6 +194,98 @@ Assert(q "Alice" qs2 ds "Carol" q == CSVParser2.FormatCell("Alice" qs ds "Carol"
 Assert(q "Alice`nCarol" q == CSVParser2.FormatCell("Alice`nCarol"))
 Assert(q "Alice`r`nCarol" q == CSVParser2.FormatCell("Alice`r`nCarol"))
 Assert(q "Alice`r" q q ds "`nCarol" q == CSVParser2.FormatCell("Alice`r" q ds "`nCarol"))
+
+; -----------------------------------------------------------------------------
+; Parsing tests with sample data files
+
+FileEncoding "UTF-8-RAW"
+targetDir := "data\malformed vs. expected"
+
+parser := CSVParser, ext := "csv"
+malformed := FileRead(targetDir "\malformed." ext)
+expected := FileRead(targetDir "\expected." ext)
+Assert(StrLen(malformed) > 0)
+Assert(expected == parser.FromArray(parser.ToArray(malformed)))
+
+parser := TSVParser, ext := "tsv"
+malformed := FileRead(targetDir "\malformed." ext)
+expected := FileRead(targetDir "\expected." ext)
+Assert(StrLen(malformed) && StrLen(expected))
+Assert(expected == parser.FromArray(parser.ToArray(malformed)))
+
+parser := DSVParser("|"), ext := "psv"
+malformed := FileRead(targetDir "\malformed." ext)
+expected := FileRead(targetDir "\expected." ext)
+Assert(StrLen(malformed) && StrLen(expected))
+Assert(expected == parser.FromArray(parser.ToArray(malformed)))
+
+parser := DSVParser("|", "'"), ext := "sq.psv"
+malformed := FileRead(targetDir "\malformed." ext)
+expected := FileRead(targetDir "\expected." ext)
+Assert(StrLen(malformed) && StrLen(expected))
+Assert(expected == parser.FromArray(parser.ToArray(malformed)))
+
+parser := DSVParser(chr(0x1F), chr(0x10)), ext := "dle.usv"
+malformed := FileRead(targetDir "\malformed." ext)
+expected := FileRead(targetDir "\expected." ext)
+Assert(StrLen(malformed) && StrLen(expected))
+Assert(expected == parser.FromArray(parser.ToArray(malformed)))
+
+parser := DSVParser(chr(0x1F), chr(0x10)), ext := "dle.rs.usv"
+malformed := FileRead(targetDir "\malformed." ext)
+expected := FileRead(targetDir "\expected." ext)
+Assert(StrLen(malformed) && StrLen(expected))
+Assert(expected == parser.FromArray(parser.ToArray(malformed), chr(0x1E)))
+
+; -----------------------------------------------------------------------------
+; Parsing tests with sample data files: CSV<=>TSV conversions
+
+FileEncoding "UTF-8-RAW"
+
+target := "data\123abc_()"
+csvData := FileRead(target ".csv")
+tsvData := FileRead(target ".tsv")
+Assert(StrLen(csvData) && StrLen(tsvData))
+Assert(tsvData == TSVParser.FromArray(CSVParser.ToArray(csvData)))
+Assert(csvData == CSVParser.FromArray(TSVParser.ToArray(tsvData)))
+
+target := "data\Alice & Bob"
+csvData := FileRead(target ".csv")
+tsvData := FileRead(target ".tsv")
+Assert(StrLen(csvData) && StrLen(tsvData))
+Assert(tsvData == TSVParser.FromArray(CSVParser.ToArray(csvData)))
+Assert(csvData == CSVParser.FromArray(TSVParser.ToArray(tsvData)))
+
+target := "data\sales-data"
+csvData := FileRead(target ".csv")
+tsvData := FileRead(target ".tsv")
+Assert(StrLen(csvData) && StrLen(tsvData))
+Assert(tsvData == TSVParser.FromArray(CSVParser.ToArray(csvData)))
+Assert(csvData == CSVParser.FromArray(TSVParser.ToArray(tsvData)))
+
+; "TheBeatles" demo files from:
+; - https://github.com/JnLlnd/ObjCSV
+
+target := "data\TheBeatles"
+csvData := FileRead(target ".csv")
+tsvData := FileRead(target ".tsv")
+Assert(StrLen(csvData) && StrLen(tsvData))
+Assert(tsvData == TSVParser.FromArray(CSVParser.ToArray(csvData)))
+Assert(csvData == CSVParser.FromArray(TSVParser.ToArray(tsvData)))
+
+target := "data\TheBeatles-LOVE"
+csvData := FileRead(target ".csv")
+tsvData := FileRead(target ".tsv")
+Assert(StrLen(csvData) && StrLen(tsvData))
+Assert(tsvData == TSVParser.FromArray(CSVParser.ToArray(csvData)))
+Assert(csvData == CSVParser.FromArray(TSVParser.ToArray(tsvData)))
+
+target := "data\TheBeatles-Lyrics"
+csvData := FileRead(target ".csv")
+tsvData := FileRead(target ".tsv")
+Assert(StrLen(csvData) && StrLen(tsvData))
+Assert(tsvData == TSVParser.FromArray(CSVParser.ToArray(csvData)))
+Assert(csvData == CSVParser.FromArray(TSVParser.ToArray(tsvData)))
 
 ; -----------------------------------------------------------------------------
 ; All tests ended
