@@ -46,6 +46,22 @@ Assert(!isLastInRow)
 Assert("" == TSVParser.FetchCell(sample, &isLastInRow, 21))
 Assert(isLastInRow)
 
+; Empty strings
+
+Assert("" == TSVParser.FormatCell(TSVParser.FetchCell("", &isLastInRow)))
+Assert(isLastInRow)
+
+; Single cells
+
+Assert("1" == TSVParser.FormatCell(TSVParser.FetchCell("1", &isLastInRow)))
+Assert(isLastInRow)
+
+; Optional blank last line
+
+inOutPos := 1
+Assert("1" == TSVParser.FormatCell(TSVParser.FetchCell("1`r`n", &isLastInRow, &inOutPos)))
+Assert(isLastInRow && inOutPos == 0)
+
 ; -----------------------------------------------------------------------------
 ; All tests ended
 

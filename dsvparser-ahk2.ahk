@@ -109,6 +109,32 @@ class DSVParser {
 		return cell
 	}
 
+	; Formats a string to be used as a single DSV cell.
+	FormatCell(InputString) {
+		local regexNeedle
+		if (ObjHasOwnProp(this, "FormatCell__regex")) {
+			regexNeedle := this.FormatCell__regex
+		} else {
+			static FormatCell__regex_presets := ",`"`t"
+				; Line break characters. See:
+				; - https://en.wikipedia.org/wiki/Newline#Unicode
+				; - https://docs.python.org/3/library/stdtypes.html#str.splitlines
+				. "`r`n`v`f" chr(0x85) chr(0x1E) chr(0x1D) chr(0x1C) chr(0x2028) chr(0x2029)
+
+			qds := RegExReplace(this.___Qualifiers this.___Delimiters, "[\Q\.*?+[{|()^$}]\E]", "\$0")
+
+			this.FormatCell__regex := regexNeedle := "S)[" qds "]"
+		}
+
+		if (InputString ~= regexNeedle) {
+			q := this.___DefaultQualifier
+			return q . StrReplace(InputString, q, q q) . q
+		}
+		return InputString
+	}
+
+	; --
+
 	ToString() => ObjHasOwnProp(this, "___ToString")
 		? this.___ToString
 		: this.___ToString := Type(this) " { "
