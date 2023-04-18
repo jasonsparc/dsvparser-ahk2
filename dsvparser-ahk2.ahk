@@ -36,23 +36,25 @@ class DSVParser {
 	; Methods
 
 	ToArray(InString, InitCapacity:=0) {
-		dsvArr := []
+		local dsvArr := []
 		if (InitCapacity)
 			dsvArr.Capacity := InitCapacity
 
-		nextPos := 1
-		maxCols := 0
+		local nextPos := 1
+		local maxCols := 0
+		local row
 
 		loop {
 			nextPos := this.NextRow(InString, &row, nextPos, maxCols)
-			cols := row.Length
+			local cols := row.Length
 			if (cols > maxCols)
 				maxCols := cols
 			dsvArr.Push(row)
 		} until !nextPos
 
+		local _ ; Needed to avoid warnings when `#Warn` enabled
 		for _, row in dsvArr {
-			extraCols := maxCols - row.Length
+			local extraCols := maxCols - row.Length
 			if (extraCols) {
 				row.Capacity := maxCols
 				loop extraCols
@@ -70,7 +72,7 @@ class DSVParser {
 		if not LineSeparator ~= ls
 			throw Error("Unsupported newline sequence.", -1)
 
-		rows := DSVArray.Length
+		local rows := DSVArray.Length
 		loop rows - 1 {
 			this.FormatRow(DSVArray[A_Index], &OutputString)
 			OutputString .= LineSeparator
@@ -93,24 +95,29 @@ class DSVParser {
 		if (InitCapacity) {
 			OutRow.Capacity := InitCapacity
 		}
+
+		local cell, done
 		loop {
 			StartingPos := this.NextCell(InString, &cell, &done, StartingPos)
 			OutRow.Push(cell)
 		} until done
+
 		return StartingPos
 	}
 
 	FetchRow(InString, InOutPos:=1, InitCapacity:=0) {
-		if (not InOutPos is VarRef)
-			_InOutPos := InOutPos, InOutPos := &_InOutPos
-
+		if (not InOutPos is VarRef) {
+			local _InOutPos := InOutPos
+			InOutPos := &_InOutPos
+		}
+		local row
 		%InOutPos% := this.NextRow(InString, &row, %InOutPos%, InitCapacity)
 		return row
 	}
 
 	FormatRow(RowArray, &OutputString:="") {
-		d := this.___DefaultDelimiter
-		cols := RowArray.Length
+		local d := this.___DefaultDelimiter
+		local cols := RowArray.Length
 		loop cols - 1
 			OutputString .= this.FormatCell(RowArray[A_Index]) . d
 		OutputString .= this.FormatCell(RowArray[cols])
@@ -137,8 +144,8 @@ class DSVParser {
 			; - https://docs.python.org/3/library/stdtypes.html#str.splitlines
 			static nl := "`r`n`v`f" chr(0x85) chr(0x1E) chr(0x1D) chr(0x1C) chr(0x2028) chr(0x2029)
 
-			ds := RegExReplace(this.___Delimiters, "[\Q\.*?+[{|()^$}]\E]", "\$0")
-			qs := RegExReplace(this.___Qualifiers, "[\Q\.*?+[{|()^$}]\E]", "\$0")
+			local ds := RegExReplace(this.___Delimiters, "[\Q\.*?+[{|()^$}]\E]", "\$0")
+			local qs := RegExReplace(this.___Qualifiers, "[\Q\.*?+[{|()^$}]\E]", "\$0")
 
 			this.NextCell__regex := regexNeedle := "SsD)"
 				. (StrLen(this.___Qualifiers) > 1 ? "(?:"
@@ -160,16 +167,17 @@ class DSVParser {
 					. "|.|$"
 				. ")"
 		}
-		found := RegExMatch(InString, regexNeedle, &match, Max(StartingPos, 1))
+		local match
+		local found := RegExMatch(InString, regexNeedle, &match, Max(StartingPos, 1))
 
-		q := match.Qualifier
+		local q := match.Qualifier
 		; According to the RFC, Implementors should:
 		; "be conservative in what you do, be liberal in what you accept from
 		; others" (RFC 793, Section 2.10) (RFC 4180, Page 4)
 		OutCell := StrReplace(match.Qualified, q q, q) . match.Delimited
 		; The above treatment is also the same as that of Microsoft Excel.
 
-		nextPos := found + match.Len
+		local nextPos := found + match.Len
 		if (StrLen(match.Delimiter)) {
 			; Found a delimiter. Therefore, there should be a next cell, even if
 			; it's an empty one.
@@ -184,9 +192,11 @@ class DSVParser {
 	}
 
 	FetchCell(InString, &OutIsLastInRow:=false, InOutPos:=1) {
-		if (not InOutPos is VarRef)
-			_InOutPos := InOutPos, InOutPos := &_InOutPos
-
+		if (not InOutPos is VarRef) {
+			local _InOutPos := InOutPos
+			InOutPos := &_InOutPos
+		}
+		local cell
 		%InOutPos% := this.NextCell(InString, &cell, &OutIsLastInRow, %InOutPos%)
 		return cell
 	}
@@ -203,13 +213,13 @@ class DSVParser {
 				; - https://docs.python.org/3/library/stdtypes.html#str.splitlines
 				. "`r`n`v`f" chr(0x85) chr(0x1E) chr(0x1D) chr(0x1C) chr(0x2028) chr(0x2029)
 
-			qds := RegExReplace(this.___Qualifiers this.___Delimiters, "[\Q\.*?+[{|()^$}]\E]", "\$0")
+			local qds := RegExReplace(this.___Qualifiers this.___Delimiters, "[\Q\.*?+[{|()^$}]\E]", "\$0")
 
 			this.FormatCell__regex := regexNeedle := "S)[" qds "]"
 		}
 
 		if (InputString ~= regexNeedle) {
-			q := this.___DefaultQualifier
+			local q := this.___DefaultQualifier
 			return q . StrReplace(InputString, q, q q) . q
 		}
 		return InputString
