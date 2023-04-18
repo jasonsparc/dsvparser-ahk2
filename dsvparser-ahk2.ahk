@@ -215,7 +215,7 @@ class DSVParser {
 
 			local qds := RegExReplace(this.___Qualifiers this.___Delimiters, "[\Q\.*?+[{|()^$}]\E]", "\$0")
 
-			this.FormatCell__regex := regexNeedle := "S)[" qds "]"
+			this.FormatCell__regex := regexNeedle := "S)[" FormatCell__regex_presets qds "]"
 		}
 
 		if (InputString ~= regexNeedle) {
