@@ -10,26 +10,26 @@ class DSVParser {
 		if (StrLen(Delimiters) <= 0)
 			throw Error("No delimiter specified.", -1)
 
-		this.___Ds := Delimiters
-		this.___Qs := Qualifiers
+		this.___Delimiters := Delimiters
+		this.___Qualifiers := Qualifiers
 
-		this.___D := SubStr(this.___Ds, 1, 1)
-		this.___Q := SubStr(this.___Qs, 1, 1)
+		this.___DefaultDelimiter := SubStr(this.___Delimiters, 1, 1)
+		this.___DefaultQualifier := SubStr(this.___Qualifiers, 1, 1)
 	}
 
 	; -------------------------------------------------------------------------
 	; Properties
 
-	Delimiters => this.___Ds
+	Delimiters => this.___Delimiters
 	Ds => this.Delimiters
 
-	Qualifiers => this.___Qs
+	Qualifiers => this.___Qualifiers
 	Qs => this.Qualifiers
 
-	DefaultDelimiter => this.___D
+	DefaultDelimiter => this.___DefaultDelimiter
 	D => this.DefaultDelimiter
 
-	DefaultQualifier => this.___Q
+	DefaultQualifier => this.___DefaultQualifier
 	Q => this.DefaultQualifier
 
 	; -------------------------------------------------------------------------
@@ -55,11 +55,11 @@ class DSVParser {
 			; - https://docs.python.org/3/library/stdtypes.html#str.splitlines
 			static nl := "`r`n`v`f" chr(0x85) chr(0x1E) chr(0x1D) chr(0x1C) chr(0x2028) chr(0x2029)
 
-			ds := RegExReplace(this.___Ds, "[\Q\.*?+[{|()^$}]\E]", "\$0")
-			qs := RegExReplace(this.___Qs, "[\Q\.*?+[{|()^$}]\E]", "\$0")
+			ds := RegExReplace(this.___Delimiters, "[\Q\.*?+[{|()^$}]\E]", "\$0")
+			qs := RegExReplace(this.___Qualifiers, "[\Q\.*?+[{|()^$}]\E]", "\$0")
 
 			this.NextCell__regex := regexNeedle := "SsD)"
-				. (StrLen(this.___Qs) > 1 ? "(?:"
+				. (StrLen(this.___Qualifiers) > 1 ? "(?:"
 					. "(?P<Qualifier>[" qs "])"
 					. "(?P<Qualified>(?:(?!\1).|\1\1)*)"
 					. "\1"
