@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "description": "High-quality, simple DSV (e.g., CSV, TSV) parsing utilities for AutoHotkey v2.0",
+  "repository": "https://github.com/jasonsparc/dsvparser-ahk2",
+  "website": "https://github.com/jasonsparc/dsvparser-ahk2",
+  "license": "Unlicense",
+  "issueTracker": "https://github.com/jasonsparc/dsvparser-ahk2/issues",
+  "include": "dsvparser-ahk2.ahk",
+  "author": {
+    "name": "jasonsparc",
+    "email": "jason.sparc.7@gmail.com",
+    "website": ""
+  },
+  "scripts": {},
+  "dependencies": {}
+}
