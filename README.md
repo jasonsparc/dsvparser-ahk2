@@ -85,7 +85,7 @@ to quickly parse a “single line” of CSV string. However, if your string cont
 several lines of text, it will still treat it as if it was a single line of CSV
 string. To mitigate this problem, you may first break the string up into several
 lines using a file-reading loop (either [`Loop read`][loop-read] or
-[``Loop parse, _, "`n", "`r"``][loop-parse-ex-file]), then parse each line
+[``Loop parse _, "`n", "`r"``][loop-parse-ex-file]), then parse each line
 separately. However, that ignores the fact that a CSV cell is allowed to contain
 multiple lines—Yes! All in a single CSV cell! If your CSV data is quite complex,
 `Loop parse` won't be able to handle such cases.
