@@ -3,6 +3,12 @@
 
 #Include ..\dsvparser-ahk2.ahk
 
+RunHint := Gui("-SysMenu")
+RunHint.MarginY *= 2
+RunHint.BackColor := "FFFFFF"
+RunHint.AddText("W300 Center c000000", "Running tests...")
+RunHint.Show()
+
 ; -----------------------------------------------------------------------------
 ; Properties tests
 
@@ -290,6 +296,7 @@ Assert(csvData == CSVParser.FromArray(TSVParser.ToArray(tsvData)))
 ; -----------------------------------------------------------------------------
 ; All tests ended
 
+RunHint.Destroy()
 MsgBox "All tests passed!", , "Iconi"
 
 ExitApp ; =====================================================================
