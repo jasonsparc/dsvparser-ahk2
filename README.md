@@ -77,3 +77,25 @@ Many more utility functions are provided for parsing and formatting DSV strings,
 including parsing just a single DSV cell.
 
 Check out the source code! It's really just a tiny file.
+
+## Why not just use `Loop parse`?
+
+AutoHotkey v2 comes with [`Loop parse _, "CSV"`][loop-parse], which allows you
+to quickly parse a “single line” of CSV string. However, if your string contains
+several lines of text, it will still treat it as if it was a single line of CSV
+string. To mitigate this problem, you may first break the string up into several
+lines using a file-reading loop (either [`Loop read`][loop-read] or
+[``Loop parse, _, "`n", "`r"``][loop-parse-ex-file]), then parse each line
+separately. However, that ignores the fact that a CSV cell is allowed to contain
+multiple lines—Yes! All in a single CSV cell! If your CSV data is quite complex,
+`Loop parse` won't be able to handle such cases.
+
+[loop-parse]: https://www.autohotkey.com/docs/v2/lib/LoopParse.htm
+[loop-parse-ex-file]: https://www.autohotkey.com/docs/v2/lib/LoopParse.htm#ExFileRead
+[loop-read]: https://www.autohotkey.com/docs/v2/lib/LoopRead.htm
+
+For the initial motivation regarding the creation of this library, see the forum
+post: “[[Library] DSV Parser - AutoHotkey Community](https://www.autohotkey.com/boards/viewtopic.php?t=70425)”
+
+> P.S. This library can even be used to parse a CSV inside a CSV, inside a CSV,
+inside a CSV, inside a…—Whatever “RFC 4180” allows.
