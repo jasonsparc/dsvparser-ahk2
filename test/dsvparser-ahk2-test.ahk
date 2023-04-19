@@ -7,6 +7,7 @@ TestRunHint := Gui("-SysMenu")
 TestRunHint.MarginY *= 2
 TestRunHint.BackColor := "FFFFFF"
 TestRunHint.AddText("W300 Center c000000", "Running tests...")
+OnError (Thrown, Mode) => TestRunHint.Destroy()
 TestRunHint.Show()
 
 ; -----------------------------------------------------------------------------
@@ -311,8 +312,6 @@ Assert(condition, extra:="") {
 				extra2 .= " " Format("0x{:X}", Ord(SubStr(extra, A_Index, 1)))
 			extra .= extra2
 		}
-		global TestRunHint
-		TestRunHint.Destroy()
 		throw Error("Assertion failed!", -1, extra)
 	}
 }
