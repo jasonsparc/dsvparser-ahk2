@@ -295,6 +295,36 @@ Assert(tsvData == TSVParser.FromArray(CSVParser.ToArray(csvData)))
 Assert(csvData == CSVParser.FromArray(TSVParser.ToArray(tsvData)))
 
 ; -----------------------------------------------------------------------------
+; Parsing tests: A CSV inside a CSV, inside a CSV, inside a CSV!
+
+src := [[1,2,3],[4,5,6],[7,8,9]]
+csv := CSVParser.FromArray(src)
+
+src := [[csv,csv,csv],[csv,csv,csv],[csv,csv,csv]]
+csv := CSVParser.FromArray(src)
+
+src := [[csv,csv,csv],[csv,csv,csv],[csv,csv,csv]]
+csv := CSVParser.FromArray(src)
+
+src := [[csv,csv,csv],[csv,csv,csv],[csv,csv,csv]]
+csv := CSVParser.FromArray(src)
+
+Assert(csv == FileRead("data\csv-in-csv-in-csv-in-csv.csv"))
+
+dst := CSVParser.ToArray(csv)
+dst := CSVParser.ToArray(dst[3][3])
+dst := CSVParser.ToArray(dst[3][3])
+dst := CSVParser.ToArray(dst[3][3])
+
+Assert(dst[1][1] == "1")
+Assert(dst[1][3] == "3")
+Assert(dst[2][3] == "6")
+
+Assert(dst[3][3] == "9")
+Assert(dst[3][2] == "8")
+Assert(dst[3][1] == "7")
+
+; -----------------------------------------------------------------------------
 ; All tests ended
 
 TestRunHint.Destroy()
