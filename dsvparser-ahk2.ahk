@@ -1,3 +1,13 @@
+; Simple DSV (e.g., CSV, TSV) parsing utilities.
+; https://github.com/jasonsparc/dsvparser-ahk2
+;
+; See also,
+; - https://www.autohotkey.com/boards/viewtopic.php?t=70425
+; - https://github.com/jasonsparc/DSVParser-AHK
+; - `Loop parse _, "CSV"` from AutoHotkey v2.0 -- https://www.autohotkey.com/docs/v2/lib/LoopParse.htm
+; - https://github.com/hi5/CSV
+; - https://github.com/JnLlnd/ObjCSV
+;
 #Requires AutoHotkey v2.0
 
 global CSVParser := DSVParser(",")
