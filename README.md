@@ -40,6 +40,14 @@ parsed as `hello world "foo bar"`).
 
 ### Basic usage
 
+Download [`dsvparser-ahk2.ahk`][download] then include it in your script (via
+[`#Include`][include]) as its library.
+
+Once you've done that, here's how you might use the library:
+
+[download]: https://raw.githubusercontent.com/jasonsparc/dsvparser-ahk2/master/dsvparser-ahk2.ahk
+[include]: https://www.autohotkey.com/docs/v2/lib/_Include.htm
+
 ```AutoHotkey
 ; Load a TSV data string
 tsvStr := FileRead("data.tsv")
