@@ -74,7 +74,7 @@ class DSVParser {
 		return dsvArr
 	}
 
-	FromArray(DSVArray, LineSeparator:="`r`n", BlankLastLine:=true, &OutputString:="") {
+	FromArray(DSVArray, LineSeparator:="`r`n", BlankLastLine:=true) {
 		; Supported line separators. See:
 		; - https://en.wikipedia.org/wiki/Newline#Representation
 		; - https://docs.python.org/3/library/stdtypes.html#str.splitlines
@@ -82,15 +82,16 @@ class DSVParser {
 		if not LineSeparator ~= ls
 			throw Error("Unsupported newline sequence.", -1)
 
+		local ret := ""
 		local rows := DSVArray.Length
 		loop rows - 1 {
-			this.FormatRow(DSVArray[A_Index], &OutputString)
-			OutputString .= LineSeparator
+			ret .= this.FormatRow(DSVArray[A_Index])
+			ret .= LineSeparator
 		}
-		this.FormatRow(DSVArray[rows], &OutputString)
+		ret .= this.FormatRow(DSVArray[rows])
 		if (BlankLastLine)
-			OutputString .= LineSeparator
-		return OutputString
+			ret .= LineSeparator
+		return ret
 	}
 
 	; Given a DSV string, parses a single DSV row from it, spits out to the
@@ -125,13 +126,14 @@ class DSVParser {
 		return row
 	}
 
-	FormatRow(RowArray, &OutputString:="") {
+	FormatRow(RowArray) {
+		local ret := ""
 		local d := this.___DefaultDelimiter
 		local cols := RowArray.Length
 		loop cols - 1
-			OutputString .= this.FormatCell(RowArray[A_Index]) . d
-		OutputString .= this.FormatCell(RowArray[cols])
-		return OutputString
+			ret .= this.FormatCell(RowArray[A_Index]) . d
+		ret .= this.FormatCell(RowArray[cols])
+		return ret
 	}
 
 	; Given a DSV string, parses a single DSV cell from it, spits it out to the
