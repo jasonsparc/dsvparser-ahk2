@@ -1,5 +1,5 @@
 ; Simple DSV (e.g., CSV, TSV) parsing utilities.
-; https://github.com/jasonsparc/dsvparser-ahk2
+; - https://github.com/jasonsparc/dsvparser-ahk2
 ;
 ; See also,
 ; - https://www.autohotkey.com/boards/viewtopic.php?t=70425
