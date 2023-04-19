@@ -40,13 +40,16 @@ parsed as `hello world "foo bar"`).
 
 ### Basic usage
 
-Download [`dsvparser-ahk2.ahk`][download] then include it in your script (via
-[`#Include`][include]) as its library.
-
-Once you've done that, here's how you might use the library:
+Download [`dsvparser-ahk2.ahk`][download][^1] then include it in your script
+(via [`#Include`][include]) as its library.
 
 [download]: https://raw.githubusercontent.com/jasonsparc/dsvparser-ahk2/master/dsvparser-ahk2.ahk
 [include]: https://www.autohotkey.com/docs/v2/lib/_Include.htm
+
+[^1]: **Tip:** Right-click the link [`dsvparser-ahk2.ahk`][download], then "Save
+  link as…" or whatever is the equivalent provided by your browser.
+
+Once you've done that, here's how you might use the library:
 
 ```AutoHotkey
 ; Load a TSV data string
