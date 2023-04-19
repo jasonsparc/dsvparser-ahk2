@@ -3,11 +3,11 @@
 
 #Include ..\dsvparser-ahk2.ahk
 
-RunHint := Gui("-SysMenu")
-RunHint.MarginY *= 2
-RunHint.BackColor := "FFFFFF"
-RunHint.AddText("W300 Center c000000", "Running tests...")
-RunHint.Show()
+TestRunHint := Gui("-SysMenu")
+TestRunHint.MarginY *= 2
+TestRunHint.BackColor := "FFFFFF"
+TestRunHint.AddText("W300 Center c000000", "Running tests...")
+TestRunHint.Show()
 
 ; -----------------------------------------------------------------------------
 ; Properties tests
@@ -296,7 +296,7 @@ Assert(csvData == CSVParser.FromArray(TSVParser.ToArray(tsvData)))
 ; -----------------------------------------------------------------------------
 ; All tests ended
 
-RunHint.Destroy()
+TestRunHint.Destroy()
 MsgBox "All tests passed!", , "Iconi"
 
 ExitApp ; =====================================================================
@@ -311,8 +311,8 @@ Assert(condition, extra:="") {
 				extra2 .= " " Format("0x{:X}", Ord(SubStr(extra, A_Index, 1)))
 			extra .= extra2
 		}
-		global RunHint
-		RunHint.Destroy()
+		global TestRunHint
+		TestRunHint.Destroy()
 		throw Error("Assertion failed!", -1, extra)
 	}
 }
