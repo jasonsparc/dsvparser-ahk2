@@ -311,6 +311,8 @@ Assert(condition, extra:="") {
 				extra2 .= " " Format("0x{:X}", Ord(SubStr(extra, A_Index, 1)))
 			extra .= extra2
 		}
+		global RunHint
+		RunHint.Destroy()
 		throw Error("Assertion failed!", -1, extra)
 	}
 }
