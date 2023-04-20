@@ -7,7 +7,7 @@ TestRunHint := Gui("-SysMenu")
 TestRunHint.MarginY *= 2
 TestRunHint.BackColor := "FFFFFF"
 TestRunHint.AddText("W300 Center c000000", "Running tests...")
-OnError (Thrown, Mode) => TestRunHint.Destroy()
+OnError (Thrown, Mode) => (TestRunHint.Destroy(), 0)
 TestRunHint.Show()
 
 ; -----------------------------------------------------------------------------
