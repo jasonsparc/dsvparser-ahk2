@@ -312,9 +312,9 @@ csv := CSVParser.FromArray(src)
 Assert(csv == FileRead("data\csv-in-csv-in-csv-in-csv.csv"))
 
 dst := CSVParser.ToArray(csv)
-dst := CSVParser.ToArray(dst[3][3])
-dst := CSVParser.ToArray(dst[3][3])
-dst := CSVParser.ToArray(dst[3][3])
+dst := CSVParser.ToArray(dst[3][2])
+dst := CSVParser.ToArray(dst[2][1])
+dst := CSVParser.ToArray(dst[1][3])
 
 Assert(dst[1][1] == "1")
 Assert(dst[1][3] == "3")
