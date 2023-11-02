@@ -164,7 +164,7 @@ class DSVParser {
 					. "(?P<Qualifier>[" qs "])"
 					. "(?P<Qualified>(?:(?!\1).|\1\1)*)"
 					. "\1"
-				. ")?" : (qs ? "(?:"
+				. ")?" : (StrLen(qs) ? "(?:"
 					. "(?P<Qualifier>" qs ")"
 					. "(?P<Qualified>(?:[^" qs "]|" qs qs ")*)"
 					. qs
