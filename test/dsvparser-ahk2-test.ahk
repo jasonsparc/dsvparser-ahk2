@@ -35,6 +35,21 @@ Assert(String(TSVParser))
 Assert(String(CSVParser) == String(CSVParser))
 Assert(String(TSVParser) == String(TSVParser))
 
+; Test cached properties
+
+Assert(ObjHasOwnProp(CSVParser, "___ToString"))
+Assert(ObjHasOwnProp(TSVParser, "___ToString"))
+
+parser := CSVParser
+
+name := "FormatCell__regex"
+Assert(!ObjHasOwnProp(parser, name)), parser.FormatCell("Foo")
+Assert(ObjHasOwnProp(parser, name))
+
+name := "NextCell__regex"
+Assert(!ObjHasOwnProp(parser, name)), parser.NextCell("Foo")
+Assert(ObjHasOwnProp(parser, name))
+
 ; -----------------------------------------------------------------------------
 ; Basic white-box tests
 
