@@ -68,7 +68,7 @@ MsgBox MyTable[2][1] ; Access 1st cell of 2nd row
 csvStr := CSVParser.FromArray(MyTable, "`n", false)
 
 if (FileExist("new-data.csv"))
-	FileDelete("new-data.csv")
+    FileDelete("new-data.csv")
 FileAppend(csvStr, "new-data.csv")
 ```
 
@@ -109,4 +109,4 @@ For the initial motivation regarding the creation of this library, see the forum
 post: “[[Library] DSV Parser - AutoHotkey Community](https://www.autohotkey.com/boards/viewtopic.php?t=70425)”
 
 > P.S. This library can even be used to parse a CSV inside a CSV, inside a CSV,
-inside a CSV, inside a…—Whatever “RFC 4180” allows.
+inside a CSV, inside a…—whatever “RFC 4180” allows.
